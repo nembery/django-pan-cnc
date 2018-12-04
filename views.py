@@ -19,7 +19,7 @@ class CNCBaseFormView(FormView):
     # base form class, you should not need to override this
     form_class = forms.Form
     # form to render, override if you need a specific html fragment to render the form
-    template_name = 'base/dynamic_form.html'
+    template_name = 'pan_cnc/dynamic_form.html'
     # where to forward after we've successfully acted on the submitted form data
     success_url = '/'
     # name of the snippet to load and use as the basis for the dynamic form
@@ -39,6 +39,8 @@ class CNCBaseFormView(FormView):
     fields_to_render = list()
     # loaded snippet
     service = dict()
+    # base html
+    base_html = 'pan_cnc/base.html'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -46,6 +48,7 @@ class CNCBaseFormView(FormView):
         context['form'] = form
         context['header'] = self.header
         context['title'] = self.title
+        context['base_html'] = self.app_dir + '/base.html'
         return context
 
     def get(self, request, *args, **kwargs):
@@ -97,11 +100,10 @@ class CNCBaseFormView(FormView):
         return template
 
     def save_workflow_to_session(self):
-        '''
+        """
         Save the current user input to the session
-        :param service: desired service
         :return: None
-        '''
+        """
 
         if self.app_dir in self.request.session:
             current_workflow = self.request.session[self.app_dir]
