@@ -42,6 +42,9 @@ class CNCBaseFormView(FormView):
     # base html
     base_html = 'pan_cnc/base.html'
 
+    def get_snippet(self):
+        return self.snippet
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         form = self.generate_dynamic_form()
@@ -55,7 +58,7 @@ class CNCBaseFormView(FormView):
         """Handle GET requests: instantiate a blank version of the form."""
         # load the snippet into the class attribute here so it's available to all other methods throughout the
         # call chain in the child classes
-        self.service = snippet_utils.load_snippet_with_name(self.snippet, self.app_dir)
+        self.service = snippet_utils.load_snippet_with_name(self.get_snippet(), self.app_dir)
         return self.render_to_response(self.get_context_data())
 
     def post(self, request, *args, **kwargs):
@@ -69,7 +72,7 @@ class CNCBaseFormView(FormView):
             print('LOADING SERVICE')
             # load the snippet into the class attribute here so it's available to all other methods throughout the
             # call chain in the child classes
-            self.service = snippet_utils.load_snippet_with_name(self.snippet, self.app_dir)
+            self.service = snippet_utils.load_snippet_with_name(self.get_snippet(), self.app_dir)
             # go ahead and save all our curent POSTed variables to the session for use later
             self.save_workflow_to_session()
             # return the normal form_valid method here
@@ -119,13 +122,15 @@ class CNCBaseFormView(FormView):
         self.request.session[self.app_dir] = current_workflow
 
     def generate_dynamic_form(self):
+
+        snippet = self.get_snippet()
         dynamic_form = forms.Form()
-        if 'variables' not in self.service:
-            print('No service found on this class')
+        if 'variables' not in snippet:
+            print('No snippet found on this class')
             return dynamic_form
 
-        # Get all of the variables defined in the service
-        for variable in self.service['variables']:
+        # Get all of the variables defined in the snippet
+        for variable in snippet['variables']:
             if len(self.fields_to_render) != 0:
                 print(self.fields_to_render)
                 if variable['name'] not in self.fields_to_render:
