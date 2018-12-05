@@ -52,7 +52,7 @@ def load_snippets_of_type(snippet_type=None, app_dir=None):
     """
     snippets_dir = Path(os.path.join(settings.BASE_DIR, app_dir, 'snippets'))
     services = list()
-    for d in snippets_dir.glob('./*'):
+    for d in snippets_dir.rglob('./*'):
         mdf = os.path.join(d, 'metadata.yaml')
         if os.path.isfile(mdf):
             try:
