@@ -55,9 +55,11 @@ def load_snippets_of_type(snippet_type=None, app_dir=None):
     for d in snippets_dir.rglob('./*'):
         mdf = os.path.join(d, 'metadata.yaml')
         if os.path.isfile(mdf):
+            snippet_path = os.path.dirname(mdf)
             try:
                 with open(mdf, 'r') as sc:
                     service_config = oyaml.load(sc.read())
+                    service_config['snippet_path'] = snippet_path
                     if snippet_type is not None:
                         if 'type' in service_config and service_config['type'] == snippet_type:
                             services.append(service_config)
