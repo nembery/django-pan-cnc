@@ -20,7 +20,7 @@ logger.addHandler(handler)
 def panorama_login(panorama_ip=None, panorama_username=None, panorama_password=None):
     global xapi_obj
     try:
-        if xapi_obj is not None:
+        if xapi_obj is None:
             print('xapi not init yet')
             credentials = get_panorama_credentials(panorama_ip, panorama_username, panorama_password)
             xapi_obj = pan.xapi.PanXapi(**credentials)
