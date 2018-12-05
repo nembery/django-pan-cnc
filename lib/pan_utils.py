@@ -1,17 +1,12 @@
 import logging
 import os
 from pathlib import Path
+from xml.etree import ElementTree as et
 
 import pan.xapi
-from pan import rc
-from pan.xapi import PanXapiError
-
 from django.conf import settings
 from django.core.cache import cache
 from jinja2 import Environment, BaseLoader
-from xml.etree import ElementTree as et
-import configparser
-import re
 
 xapi_obj = None
 
@@ -91,6 +86,11 @@ def push_service(service, context):
                 print('Pushing xpath: %s' % xpath)
                 print('Pushing element: %s' % xml_snippet)
                 xapi.set(xpath=xpath_string, element=xml_snippet)
+                if xapi.status_code == '19' or xapi.status_code == '20':
+                    print('xpath is already present')
+                elif xapi.status_code == '7':
+                    print('xpath was NOT found')
+                    return False
 
         xapi.commit('<commit/>', sync=True)
         print(xapi.xml_result())
@@ -157,7 +157,7 @@ def get_device_groups_from_panorama():
             service = dict()
             for tag in dg.findall('./tag/entry'):
                 if 'name' in tag.attrib and ':' in tag.attrib['name']:
-                    k,v = tag.attrib['name'].split(':')
+                    k, v = tag.attrib['name'].split(':')
                     service[k] = v
                     service['name'] = dg.attrib['name']
 
