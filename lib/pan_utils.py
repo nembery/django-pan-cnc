@@ -83,8 +83,7 @@ def push_service(service, context):
                 xpath_template = Environment(loader=BaseLoader()).from_string(xpath)
                 xml_snippet = xml_template.render(context).replace('\n', '')
                 xpath_string = xpath_template.render(context)
-                print('Pushing xpath: %s' % xpath)
-                print('Pushing element: %s' % xml_snippet)
+                print('Pushing xpath: %s' % xpath_string)
                 xapi.set(xpath=xpath_string, element=xml_snippet)
                 if xapi.status_code == '19' or xapi.status_code == '20':
                     print('xpath is already present')
