@@ -76,14 +76,14 @@ def push_service(service, context):
     if 'snippet_path' in service:
         snippets_dir = service['snippet_path']
     else:
-        snippets_dir = Path(os.path.join(settings.BASE_DIR, 'mssp', 'snippets'))
+        snippets_dir = Path(os.path.join(settings.BASE_DIR, 'mssp', 'snippets', service['name']))
 
     try:
         for snippet in service['snippets']:
             xpath = snippet['xpath']
             xml_file_name = snippet['file']
 
-            xml_full_path = os.path.join(snippets_dir, service['name'], xml_file_name)
+            xml_full_path = os.path.join(snippets_dir, xml_file_name)
             with open(xml_full_path, 'r') as xml_file:
                 xml_string = xml_file.read()
                 xml_template = Environment(loader=BaseLoader()).from_string(xml_string)
