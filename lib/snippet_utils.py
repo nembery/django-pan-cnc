@@ -32,6 +32,17 @@ def load_all_snippets(app_dir):
     return services
 
 
+def load_snippets_by_label(label_name, label_value, app_dir):
+    services = load_snippets_of_type(snippet_type=None, app_dir=app_dir)
+    filtered_services = list()
+    for service in services:
+        if 'labels' in service and label_name in service['labels']:
+            if service['labels'][label_name] == label_value:
+                filtered_services.append(service)
+
+    return filtered_services
+
+
 def load_snippets_of_type(snippet_type=None, app_dir=None):
     """
     Loads a list of snippets of the given type, or all snippets of snippet_type is None
