@@ -20,7 +20,7 @@ logger.addHandler(handler)
 def panorama_login(panorama_ip=None, panorama_username=None, panorama_password=None):
     global xapi_obj
     try:
-        if xapi_obj is None:
+        if xapi_obj is not None:
             print('xapi not init yet')
             credentials = get_panorama_credentials(panorama_ip, panorama_username, panorama_password)
             xapi_obj = pan.xapi.PanXapi(**credentials)
@@ -36,7 +36,7 @@ def panorama_login(panorama_ip=None, panorama_username=None, panorama_password=N
     except pan.xapi.PanXapiError as pxe:
         print('Got error logging in to Panorama')
         print(pxe)
-        return False
+        return None
 
 
 def test_panorama():
@@ -117,6 +117,9 @@ def validate_snippet_present(service, context):
     :return: boolean True if found, false if any xpath is not found
     """
     xapi = panorama_login()
+    if xapi is None:
+        raise Exception('Could not login to Panorama')
+
     try:
         for snippet in service['snippets']:
             xpath = snippet['xpath']
@@ -135,6 +138,7 @@ def validate_snippet_present(service, context):
     except pan.xapi.PanXapiError as pxe:
         print('Could not validate snippet was present!')
         print(pxe)
+        raise
 
 
 def get_device_groups_from_panorama():
