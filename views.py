@@ -43,6 +43,7 @@ class CNCBaseFormView(FormView):
     base_html = 'pan_cnc/base.html'
 
     def get_snippet(self):
+        print('returning snippet name: %s' % self.snippet)
         return self.snippet
 
     def get_context_data(self, **kwargs):
@@ -123,14 +124,13 @@ class CNCBaseFormView(FormView):
 
     def generate_dynamic_form(self):
 
-        snippet = self.get_snippet()
         dynamic_form = forms.Form()
-        if 'variables' not in snippet:
-            print('No snippet found on this class')
+        if 'variables' not in self.service:
+            print('No self.service found on this class')
             return dynamic_form
 
-        # Get all of the variables defined in the snippet
-        for variable in snippet['variables']:
+        # Get all of the variables defined in the self.service
+        for variable in self.service['variables']:
             if len(self.fields_to_render) != 0:
                 print(self.fields_to_render)
                 if variable['name'] not in self.fields_to_render:
