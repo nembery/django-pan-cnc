@@ -43,7 +43,7 @@ class CNCBaseFormView(FormView):
     # loaded snippet
     service = dict()
     # base html
-    base_html = 'pan_cnc/base.html'
+    base_html = ''
 
     def get_snippet(self) -> str:
         print('returning snippet name: %s' % self.snippet)
@@ -55,7 +55,12 @@ class CNCBaseFormView(FormView):
         context['form'] = form
         context['header'] = self.header
         context['title'] = self.title
-        context['base_html'] = self.app_dir + '/base.html'
+
+        if self.base_html != '':
+            context['base_html'] = self.base_html
+        else:
+            context['base_html'] = self.app_dir + '/base.html'
+
         return context
 
     def get(self, request, *args, **kwargs) -> Any:
