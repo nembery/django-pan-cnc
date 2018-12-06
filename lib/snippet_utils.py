@@ -95,7 +95,7 @@ def render_snippet_template(service, app_dir, context):
     try:
         template_name = service['snippets'][0]['file']
 
-        template_full_path = os.path.join(snippets_dir, service['name'], template_name)
+        template_full_path = os.path.join(service['snippet_path'], template_name)
         with open(template_full_path, 'r') as template:
             template_string = template.read()
             template_template = Environment(loader=BaseLoader()).from_string(template_string)
